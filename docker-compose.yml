@@ -1,0 +1,30 @@
+version: '3'
+
+volumes:
+    mongo_data:
+
+services:
+
+    chainvote-api:
+      restart: always
+      stdin_open: true
+      tty: true
+      build: .
+      command: uvicorn main:app --host 0.0.0.0 --port 8000 --debug --reload 
+      volumes:
+        - ./chainvote-api:/chainvote-api
+      ports:
+        - "5554:8000"
+      depends_on:
+        - chainvote-db
+
+    chainvote-db:
+      restart: always
+      image: mongo
+      environment:
+        MONGO_INITDB_ROOT_USERNAME: "chainvote_user_db"
+        MONGO_INITDB_ROOT_PASSWORD: ":-?<!k29qs^QrM?p"
+      volumes:
+        - mongo_data:/data/db
+      ports:
+        - "27017:27017"

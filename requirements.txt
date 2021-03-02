@@ -1,0 +1,10 @@
+fastapi[all]
+aioredis
+fastapi-mail
+motor
+pydantic[email]
+bcrypt
+pyOpenSSL
+oauth2client
+python-multipart
+PyJWT
