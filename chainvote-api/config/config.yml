@@ -1,0 +1,20 @@
+databases:
+  default:
+    ENGINE: 'mongodb'
+    DRIVER: 'motor'
+    NAME: 'chainvote_db'
+    USER: 'chainvote_user_db'
+    PASSWORD: ':-?<!k29qs^QrM?p'
+    HOST: 'chainvote-db'
+    PORT: '27018'
+  cache:
+    HOST: 'chainvote-cache'
+    PORT : '6380'
+ 
+    
+jwt:
+  #openssl rand -hex 32
+  SECRET_KEY : "12b52d85f1cf722e32b4966075b549cb44fdd902f719dd8251eed39ccc2c2dbc"
+  ALGORITHM : "HS256"
+  ACCESS_TOKEN_EXPIRE_SECONDES : 600
+  ACCESS_TOKEN_EXPIRE_SECONDES_ADMIN: 3600
