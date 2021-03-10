@@ -13,7 +13,6 @@ from fastapi.security import OAuth2PasswordRequestForm
 
 users_router = APIRouter()
 users = DB.users
-categories = DB.categories
 
 
 

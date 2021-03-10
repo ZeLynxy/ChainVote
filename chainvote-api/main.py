@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from config import config 
 from users.routes import users_router
+from ballots.routes import ballots_router
 
 
 app = FastAPI()
@@ -23,6 +24,13 @@ app.include_router(
     users_router,
     prefix="/chainvote-api/users",
     tags=["users"],
+    responses={404: {"description": "Not found"}},
+)
+
+app.include_router(
+    ballots_router,
+    prefix="/chainvote-api/ballots",
+    tags=["ballots"],
     responses={404: {"description": "Not found"}},
 )
 
