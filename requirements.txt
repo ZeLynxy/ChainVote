@@ -8,3 +8,5 @@ pyOpenSSL
 oauth2client
 python-multipart
 PyJWT
+web3
+

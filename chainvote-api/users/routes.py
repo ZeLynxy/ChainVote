@@ -10,6 +10,7 @@ from utils import *
 from utils.jwt_authorization import  create_access_token, get_current_user
 from fastapi.security import OAuth2PasswordRequestForm
 
+import main
 
 users_router = APIRouter()
 users = DB.users
@@ -25,6 +26,7 @@ async def add_user_data(data: dict, background_tasks: BackgroundTasks):
     phone = data.get("phone")
     firstname =  data.get("firstname")
     lastname = data.get("lastname")
+    gender = data.get('gender')
     national_id = data.get("national_id")
     password = bcrypt.hashpw(data.get("password").encode('utf-8'), bcrypt.gensalt())
 
@@ -46,6 +48,7 @@ async def add_user_data(data: dict, background_tasks: BackgroundTasks):
                     "phone": phone,
                     "firstname": firstname,
                     "lastname": lastname,
+                    "gender": gender,
                     "national_id": national_id,
                     "password": password,
                     "created_on": datetime.datetime.now(),
@@ -55,7 +58,6 @@ async def add_user_data(data: dict, background_tasks: BackgroundTasks):
                 })
 
             if result_user.inserted_id:
-                #background_tasks.add_task(send_post_signing_up_email, [email])
 
                 return {
                         "status_code": 2000,
@@ -174,32 +176,49 @@ async def validate_users_accounts(data: dict, background_tasks: BackgroundTasks,
     if await current_user_is_admin(current_user.get("user_id")):
         if("user_to_validate_id" in data):
             user_to_validate_id = ObjectId(data["user_to_validate_id"])
-            user_to_validate = await users.find_one_and_update(
-                {"_id" : user_to_validate_id }, 
-                {
-                    "$set" : {
-                        "account_status" : UserAccountStatus.validated, 
-                        "updated_on": datetime.datetime.now()
-                    }
-                },
-                new=True
-            )
+            user = await users.find_one({"_id": user_to_validate_id})
+            if  not user.get("account_status") == UserAccountStatus.validated:
+                user_to_validate = await users.find_one_and_update(
+                    {"_id" : user_to_validate_id }, 
+                    {
+                        "$set" : {
+                            "account_status" : UserAccountStatus.validated, 
+                            "updated_on": datetime.datetime.now()
+                        }
+                    },
+                    new=True
+                )
 
-            if user_to_validate:
-                #TODO: Contact the smart contract...
-                ###modify the following
-                if "email" in data:
-                    #background_tasks.add_task(send_post_account_activation_email, [data["email"]])
-                    pass
+                if user_to_validate:
+                    voter_id = generate_ID()
+                    national_id = user_to_validate.get("national_id")
+                    firstname =  user_to_validate.get("firstname")
+                    lastname =  user_to_validate.get("lastname")
+                    gender =  user_to_validate.get("gender")
+                    email = user_to_validate.get("email")
+                    print(f"{voter_id=}")
+                    receipt = main.chainvote_contract_bridge.add_voter(voter_id, national_id, firstname, lastname, gender)
+                    if(receipt.transactionHash):
+                        background_tasks.add_task(send_post_account_activation_email, [email], voter_id)
+                        return {
+                            "status_code": 2000,
+                            "detail": "Account has been activated"
+                        }
+                    return {
+                            "status_code": 1001,
+                            "detail": "An error occured while adding voter to the block chain"
+                    }
+                else:
+                    return {
+                                "status_code": 1000,
+                                "detail": "An error occured during account activation"
+                    }
+            else:
                 return {
-                    "status_code": 2000,
-                    "detail": "Account has been activated"
+                    "status_code": 1004,
+                    "detail": "Error ! Account already activated"
                 }
-            return {
-                    "status_code": 1000,
-                    "detail": "An error occured during account activation"
-            }
-        
+            
         return {
             "status_code": 1002,
             "detail": "Incorrect request. Missing 'user_to_validate_id' key in body"

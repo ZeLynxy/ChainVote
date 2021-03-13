@@ -11,7 +11,17 @@ databases:
     HOST: 'chainvote-cache'
     PORT : '6380'
  
-    
+mail:
+  MAIL_USERNAME: "xxxxxxxx"
+  MAIL_PASSWORD: "xxxxxxxx"
+  MAIL_FROM: "xxxxxxxx"
+  MAIL_FROM_NAME: "Chainvote.io"
+  MAIL_PORT: 465
+  MAIL_SERVER: "smtp.gmail.com"
+  MAIL_TLS: False
+  MAIL_SSL: True
+
+
 jwt:
   #openssl rand -hex 32
   SECRET_KEY : "12b52d85f1cf722e32b4966075b549cb44fdd902f719dd8251eed39ccc2c2dbc"

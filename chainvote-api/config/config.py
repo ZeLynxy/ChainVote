@@ -49,6 +49,17 @@ class RedisCache:
 CACHE_DB = RedisCache()           
 
 
+############# Email conf ##################
+EMAIL_CONF = ConnectionConfig(
+        MAIL_USERNAME = CONF.get("mail")["MAIL_USERNAME"],
+        MAIL_PASSWORD = CONF.get("mail")["MAIL_PASSWORD"],
+        MAIL_FROM = CONF.get("mail")["MAIL_FROM"],
+        MAIL_FROM_NAME = CONF.get("mail")["MAIL_FROM_NAME"],
+        MAIL_PORT = CONF.get("mail")["MAIL_PORT"],
+        MAIL_SERVER = CONF.get("mail")["MAIL_SERVER"],
+        MAIL_TLS = CONF.get("mail")["MAIL_TLS"] ,
+        MAIL_SSL = CONF.get("mail")["MAIL_SSL"]
+)
 
 
 ##########JWT TOKENS#################

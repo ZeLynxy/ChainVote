@@ -23,7 +23,7 @@ async def delete_key_from_cache(key):
     await CACHE_DB.cache.delete(key)
 
 
-def generate_token():
+def generate_ID():
     return str(uuid4())
 
 

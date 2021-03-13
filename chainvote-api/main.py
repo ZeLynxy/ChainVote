@@ -3,7 +3,14 @@ from fastapi.middleware.cors import CORSMiddleware
 from config import config 
 from users.routes import users_router
 from ballots.routes import ballots_router
+from web3 import Web3
+from utils.contract import ChainVoteContractBridge
 
+
+w3 = Web3(Web3.HTTPProvider("http://172.17.0.1:7545"))
+w3.eth.defaultAccount = w3.eth.accounts[0]
+
+chainvote_contract_bridge = ChainVoteContractBridge(w3)
 
 app = FastAPI()
 
