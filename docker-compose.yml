@@ -8,7 +8,6 @@ services:
     #  restart: always
     #  build: ./ganache
     #  image: ganache:ganache
-    #  command: docker run -d -p "7545:7545" --net=host -e DISPLAY=:0 --name  ganache ganache 
     #  ports:
     #    - "7545:7545"
 
