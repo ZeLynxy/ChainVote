@@ -20,13 +20,20 @@ class ChainVoteContractBridge:
     
     def get_candidates(self):
         candidates_data = self.chainvote_contract.functions.getCandidates().call()
-        #print(self.w3.eth.waitForTransactionReceipt(candidates_data) )  
-        #receipt = self.w3.eth.waitForTransactionReceipt(candidates_data)
         candidates_ids, candidates_firstnames, candidates_lastnames, candidates_political_parties, candidates_total_votes = candidates_data
         *candidates_ids, = map(lambda x: x.hex(), candidates_ids)
-        *l, = zip (candidates_ids, candidates_firstnames, candidates_lastnames, candidates_political_parties, candidates_total_votes)
-        print(l)
-        return l
+        *candidates, = zip (candidates_ids, candidates_firstnames, candidates_lastnames, candidates_political_parties, candidates_total_votes)
+        candidates_info = []
+        for candidate in candidates:
+            candidates_info.append( {
+                "candidate_id": candidate[0],
+                "candidate_firstame": candidate[1],
+                "candidate_lastame": candidate[2],
+                "candidate_political_party": candidate[3],
+                "candidate_total_votes": candidate[4]
+            })
+
+        return candidates_info
     
     def add_voter(self, voterID, nationalId, firstname, lastname, gender):
         tx_hash = self.chainvote_contract.functions.addVoter(voterID, nationalId, firstname, lastname, gender).transact()
